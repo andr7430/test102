@@ -18,4 +18,22 @@
         android:layout_alignParentLeft="true"
         android:layout_margin="0dp">
     </com.esri.android.map.MapView>
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="TestText"
+    android:id="@+id/testtext"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Replicate"
+        android:id="@+id/replicate_button"
+        android:layout_gravity="left|bottom"
+        android:onClick="replicate"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" />
 </RelativeLayout>

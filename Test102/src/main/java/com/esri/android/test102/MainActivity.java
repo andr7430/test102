@@ -61,13 +61,13 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = "something1";
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = "something2";
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = "something3";
                 break;
         }
     }
@@ -103,6 +103,11 @@ public class MainActivity extends ActionBarActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void replicate(View view){
+        TextView responseText = (TextView)findViewById(R.id.testtext);
+        responseText.setText("whhhhhaaaaaa");
     }
 
     /**
@@ -142,8 +147,6 @@ public class MainActivity extends ActionBarActivity
             mMapView.addLayer(new ArcGISTiledMapServiceLayer("" +
                     "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"));
 
-
-
             return rootView;
         }
 
@@ -153,6 +156,9 @@ public class MainActivity extends ActionBarActivity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+
+
     }
 
 }

@@ -9,5 +9,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="title_report_blocked_roads">Blocked Roads</string>
+    <string name="title_report_flood">Flood Area</string>
+    <string name="title_report_power_outage">Power Outage</string>
+    <string name="title_report_collapse">Collapsed Building</string>
+    <string name="title_report_fire">Fire</string>
+    <string name="title_report_gas_leak">Gas Leak</string>
+    <string name="title_food">Food</string>
+    <string name="title_water">Water</string>
+    <string name="title_med">Medication</string>
 
 </resources>
