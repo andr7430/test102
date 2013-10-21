@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="arcgis-android-app-framework">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Test102/libs/arcgis-android-app-framework.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
