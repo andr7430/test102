@@ -20,5 +20,7 @@
     <string name="title_food">Food</string>
     <string name="title_water">Water</string>
     <string name="title_med">Medication</string>
+    <string name="title_layer_one">Layer1</string>
+    <string name="title_layer_two">Layer2</string>
 
 </resources>

@@ -22,7 +22,9 @@
             android:layout_gravity="top"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_margin="0dp">
+            android:layout_margin="0dp"
+            addId="a"
+            url="http://www.arcgis.com/home/webmap/viewer.html?webmap=47c4772b3e334edc9be27e48c849b8f2 ">
         </com.esri.android.map.MapView>
 
 
@@ -42,11 +44,11 @@
         android:name="com.esri.android.test102.NavigationDrawerFragment" />
 
 
-    <fragment android:id="@+id/right_na"
-        android:layout_width="@dimen/navigation_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:name="com.esri.android.test102.NavigationDrawerFragment" />
+    <!--<fragment android:id="@+id/right_na"-->
+        <!--android:layout_width="@dimen/navigation_drawer_width"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="right"-->
+        <!--android:name="com.esri.android.test102.NavigationDrawerFragment" />-->
 
 
 

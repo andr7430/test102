@@ -81,13 +81,14 @@ public class MainActivity extends ActionBarActivity
         // Retrieve the map and initial extent from XML layout
         mMapView = (MapView)findViewById(R.id.map);
         // Add dynamic layer to MapView
-        mMapView.addLayer(new ArcGISTiledMapServiceLayer("" +
-                "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"));
+        mMapView.addLayer(new ArcGISTiledMapServiceLayer("" +"http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"));
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
 
     }
 
@@ -225,6 +226,7 @@ public class MainActivity extends ActionBarActivity
 
     public void replicate(View view){
         TextView responseText = (TextView)findViewById(R.id.testtext);
+        responseText.setText(mMapView.getLayers().toString());
 
     }
 

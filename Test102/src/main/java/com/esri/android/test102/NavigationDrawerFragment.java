@@ -86,7 +86,7 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(
-                R.layout.right_navigation_drawer, container, false);
+                R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,9 +98,15 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
-                        getString(R.string.title_food),
-                        getString(R.string.title_water),
-                        getString(R.string.title_med),
+                        getString(R.string.title_layer_one),
+                        getString(R.string.title_layer_two),
+//                        getString(R.string.title_med),
+//                        getString(R.string.title_report_blocked_roads),
+//                        getString(R.string.title_report_flood),
+//                        getString(R.string.title_report_power_outage),
+//                        getString(R.string.title_report_gas_leak),
+//                        getString(R.string.title_report_fire),
+//                        getString(R.string.title_report_collapse),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
