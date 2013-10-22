@@ -216,7 +216,8 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_replicate:
+                downloadGeodatabase(this, mMapView);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -224,7 +225,7 @@ public class MainActivity extends ActionBarActivity
 
     public void replicate(View view){
         TextView responseText = (TextView)findViewById(R.id.testtext);
-        downloadGeodatabase(this, mMapView);
+
     }
 
     /**
