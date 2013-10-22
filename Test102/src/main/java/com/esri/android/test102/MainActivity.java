@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,9 +18,23 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.esri.android.map.FeatureLayer;
+import com.esri.android.map.Layer;
 import com.esri.android.map.MapView;
+import com.esri.android.map.ags.ArcGISFeatureLayer;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
+import com.esri.core.ags.FeatureServiceInfo;
+import com.esri.core.gdb.GdbFeatureTable;
+import com.esri.core.gdb.Geodatabase;
+import com.esri.core.map.CallbackListener;
+import com.esri.core.tasks.gdb.GenerateGeodatabaseParameters;
+import com.esri.core.tasks.gdb.GeodatabaseStatusCallback;
+import com.esri.core.tasks.gdb.GeodatabaseStatusInfo;
+import com.esri.core.tasks.gdb.GeodatabaseTask;
+import com.esri.core.tasks.gdb.SyncModel;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -29,13 +44,24 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    /**
+     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private MapView mMapView;
+
+    private static GeodatabaseTask gdbTask;
+    protected static final String TAG = "MainActivity";
+
+    private static String gdbFileName = "TestAndroid";
+    private static String fsUrl = "http://services.arcgis.com/Wl7Y1m92PbjtJs5n/arcgis/rest/services/SampleMapOpsDashboardSDK/FeatureServer";
+
+
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -43,10 +69,91 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
+        // Retrieve the map and initial extent from XML layout
+        mMapView = (MapView)findViewById(R.id.map);
+        // Add dynamic layer to MapView
+        mMapView.addLayer(new ArcGISTiledMapServiceLayer("" +
+                "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"));
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+    }
+
+    public static void downloadGeodatabase(final MainActivity activity, final MapView mapView) {
+
+        gdbTask = new GeodatabaseTask(fsUrl, null,
+                new CallbackListener<FeatureServiceInfo>() {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "", e);
+                    }
+
+                    @Override
+                    public void onCallback(FeatureServiceInfo objs) {
+                        // Is sync supported
+                        if (objs.isSyncEnabled()) {
+                            requestGdbInOneMethod(gdbTask, activity, mapView);
+                        }
+                    }
+                });
+    }
+
+    private static void requestGdbInOneMethod(GeodatabaseTask gdbTask, final MainActivity activity, final MapView mapView) {
+        int[] layerIds = {0};
+        GenerateGeodatabaseParameters params = new GenerateGeodatabaseParameters(
+                layerIds, mapView.getExtent(),
+                mapView.getSpatialReference(),true,
+                SyncModel.LAYER, mapView.getSpatialReference());
+
+        showProgress(activity, true);
+
+        // gdb complete callback
+        CallbackListener<Geodatabase> gdbResponseCallback = new CallbackListener<Geodatabase>() {
+
+            @Override
+            public void onCallback(Geodatabase obj) {
+                // update UI
+                showMessage(activity, "Geodatabase downloaded!");
+                Log.i(TAG, "geodatabase is: " + obj.getPath());
+
+                showProgress(activity, false);
+
+                // Remove all the feature layers from map and add a feature
+                // Layer from the downloaded geodatabase
+                for (Layer layer : mapView.getLayers()) {
+                    if (layer instanceof ArcGISFeatureLayer)
+                        mapView.removeLayer(layer);
+                }
+                for (GdbFeatureTable gdbFeatureTable : obj.getGdbTables()) {
+                    if (gdbFeatureTable.hasGeometry())
+                        mapView.addLayer(new FeatureLayer(gdbFeatureTable));
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "", e);
+            }
+
+        };
+
+        GeodatabaseStatusCallback statusCallback = new GeodatabaseStatusCallback() {
+
+            @Override
+            public void statusUpdated(GeodatabaseStatusInfo status) {
+                showMessage(activity, status.getStatus().toString());
+            }
+        };
+
+        // Single method does it all!
+        gdbTask.submitGenerateGeodatabaseJobAndDownload(params, gdbFileName,
+                statusCallback, gdbResponseCallback);
+        showMessage(activity, "Submitting gdb job...");
     }
 
     @Override
@@ -108,6 +215,11 @@ public class MainActivity extends ActionBarActivity
     public void replicate(View view){
         TextView responseText = (TextView)findViewById(R.id.testtext);
         responseText.setText("whhhhhaaaaaa");
+
+        downloadGeodatabase(this, mMapView);
+
+
+
     }
 
     /**
@@ -140,13 +252,6 @@ public class MainActivity extends ActionBarActivity
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            MapView mMapView;
-            // Retrieve the map and initial extent from XML layout
-            mMapView = (MapView)rootView.findViewById(R.id.map);
-            // Add dynamic layer to MapView
-            mMapView.addLayer(new ArcGISTiledMapServiceLayer("" +
-                    "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"));
-
             return rootView;
         }
 
@@ -157,8 +262,29 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
+    }
+
+    static void showMessage(final MainActivity activity, final String message) {
+        activity.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    static void showProgress(final MainActivity activity,
+                             final boolean b) {
+        activity.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                activity.setProgressBarIndeterminateVisibility(b);
+            }
+        });
+
 
 
     }
-
 }
