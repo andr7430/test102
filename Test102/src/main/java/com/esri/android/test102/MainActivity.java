@@ -1,6 +1,7 @@
 package com.esri.android.test102;
 
 import android.app.Activity;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -53,8 +54,16 @@ public class MainActivity extends ActionBarActivity
     private static GeodatabaseTask gdbTask;
     protected static final String TAG = "MainActivity";
 
-    private static String gdbFileName = "TestAndroid";
+
+    //some path stuff
+    private static String DEFAULT_gdbFileName = "/data/Temp/TestAndroid.geodatabase";
+    private static String gdbFileName = Environment.getExternalStorageDirectory().getPath() + DEFAULT_gdbFileName;
+    //private static String basemapFileName = Environment.getExternalStorageDirectory().getPath() + DEFAULT_BASEMAP_FILENAME;
+
+
     private static String fsUrl = "http://services.arcgis.com/Wl7Y1m92PbjtJs5n/arcgis/rest/services/SampleMapOpsDashboardSDK/FeatureServer";
+
+    private String gdbPath = "/Phone/data/Temp";
 
 
 
@@ -82,7 +91,7 @@ public class MainActivity extends ActionBarActivity
 
     }
 
-    public static void downloadGeodatabase(final MainActivity activity, final MapView mapView) {
+    private static void downloadGeodatabase(final MainActivity activity, final MapView mapView) {
 
         gdbTask = new GeodatabaseTask(fsUrl, null,
                 new CallbackListener<FeatureServiceInfo>() {
@@ -118,12 +127,13 @@ public class MainActivity extends ActionBarActivity
             public void onCallback(Geodatabase obj) {
                 // update UI
                 showMessage(activity, "Geodatabase downloaded!");
-                Log.i(TAG, "geodatabase is: " + obj.getPath());
+                Log.e(TAG, "geodatabase is: " + obj.getPath());
 
                 showProgress(activity, false);
 
                 // Remove all the feature layers from map and add a feature
                 // Layer from the downloaded geodatabase
+
                 for (Layer layer : mapView.getLayers()) {
                     if (layer instanceof ArcGISFeatureLayer)
                         mapView.removeLayer(layer);
@@ -214,12 +224,7 @@ public class MainActivity extends ActionBarActivity
 
     public void replicate(View view){
         TextView responseText = (TextView)findViewById(R.id.testtext);
-        responseText.setText("whhhhhaaaaaa");
-
         downloadGeodatabase(this, mMapView);
-
-
-
     }
 
     /**
