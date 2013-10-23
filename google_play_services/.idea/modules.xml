@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/samples/auth/auth.iml" filepath="$PROJECT_DIR$/samples/auth/auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libproject/google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/libproject/google-play-services_lib/google-play-services_lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/maps/maps.iml" filepath="$PROJECT_DIR$/samples/maps/maps.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/panorama/panorama.iml" filepath="$PROJECT_DIR$/samples/panorama/panorama.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/plus/plus.iml" filepath="$PROJECT_DIR$/samples/plus/plus.iml" />
+    </modules>
+  </component>
+</project>
+

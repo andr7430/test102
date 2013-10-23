@@ -18,7 +18,6 @@
             android:id="@+id/map"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            initExtent = "-1.3296373526814876E7 3930962.41823043 -1.2807176545789773E7 4201243.7502468005"
             android:layout_gravity="top"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
