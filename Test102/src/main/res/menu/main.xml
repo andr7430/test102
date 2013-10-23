@@ -7,4 +7,8 @@
         android:title="@string/action_sync"
         android:orderInCategory="100"
         app:showAsAction="withText|ifRoom" />
+    <item android:id="@+id/action_edit"
+        android:title="@string/action_edit"
+        android:orderInCategory="100"
+        app:showAsAction="withText|ifRoom" />
 </menu>

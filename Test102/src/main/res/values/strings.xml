@@ -22,5 +22,6 @@
     <string name="title_med">Medication</string>
     <string name="title_layer_one">Layer1</string>
     <string name="title_layer_two">Layer2</string>
+    <string name="action_edit">Edit</string>
 
 </resources>
