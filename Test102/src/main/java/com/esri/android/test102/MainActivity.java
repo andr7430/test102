@@ -57,6 +57,7 @@ import com.esri.core.tasks.gdb.GenerateGeodatabaseParameters;
 import com.esri.core.tasks.gdb.GeodatabaseStatusCallback;
 import com.esri.core.tasks.gdb.GeodatabaseStatusInfo;
 import com.esri.core.tasks.gdb.GeodatabaseTask;
+import com.esri.core.tasks.gdb.SyncGeodatabaseParameters;
 import com.esri.core.tasks.gdb.SyncModel;
 
 import java.util.ArrayList;
@@ -167,6 +168,7 @@ public class MainActivity extends ActionBarActivity
         saveButton = (Button) findViewById(R.id.savebutton);
 
         undoButton = (Button) findViewById(R.id.undobutton);
+        mTabHost = (TabHost) findViewById(R.id.tabHost);
 
 
 
@@ -300,8 +302,37 @@ public class MainActivity extends ActionBarActivity
             case R.id.action_replicate:
                 downloadGeodatabase(this, mMapView);
                 return true;
-            case R.id.action_edit:
+            case R.id.action_sync:
+                syncGeodatabase(this);
+                return true;
+            case R.id.editbutton:
+                MainActivity.showProgress(MainActivity.this, true);
+                //clear();
+                int layerCount = 0;
+                for (Layer layer : mMapView.getLayers()) {
+                    if (layer instanceof FeatureLayer) {
+                        layerCount++;
+                    }
 
+                }
+                if (layerCount > 0) {
+                    if (myListener == null) {
+                        myListener = new MyTouchListener(MainActivity.this,
+                                mMapView);
+                        mMapView.setOnTouchListener(myListener);
+                    }
+                    if (getTemplatePicker() != null) {
+                        getTemplatePicker().showAtLocation(editButton, Gravity.BOTTOM,
+                                0, 0);
+                    } else {
+                        new TemplatePickerTask().execute();
+                    }
+                } else {
+                    MainActivity.showMessage(MainActivity.this,
+                            "No Editable Local Feature Layers.");
+
+                }
+                MainActivity.showProgress(MainActivity.this, false);
                 return true;
 
         }
@@ -739,7 +770,8 @@ public class MainActivity extends ActionBarActivity
             // TODO Auto-generated method stub
             progressDialog.dismiss();
             getTemplatePicker()
-                    .showAtLocation(editButton, Gravity.BOTTOM, 0, 0);
+                    .showAtLocation(mTabHost, Gravity.BOTTOM, 0, 0);
+            //getTemplatePicker().sh;
 
             super.onPostExecute(result);
         }
@@ -971,6 +1003,50 @@ public class MainActivity extends ActionBarActivity
         midpointselected = false; // back to the normal drawing mode.
         vertexselected = false;
 
+    }
+
+    private static void syncGeodatabase(final MainActivity activity) {
+
+        try {
+            // Create local geodatabase
+            Geodatabase gdb = new Geodatabase(gdbFileName);
+
+            // Get sync parameters from geodatabase
+            final SyncGeodatabaseParameters syncParams = gdb
+                    .getSyncParameters();
+
+            CallbackListener<Geodatabase> syncResponseCallback = new CallbackListener<Geodatabase>() {
+
+                @Override
+                public void onCallback(Geodatabase objs) {
+                    showMessage(activity, "Sync Completed");
+                    showProgress(activity, false);
+                    Log.e(TAG, "Geodatabase: " + objs.getPath());
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, "", e);
+                    showMessage(activity, e.getMessage());
+                    showProgress(activity, false);
+                }
+
+            };
+            GeodatabaseStatusCallback statusCallback = new GeodatabaseStatusCallback() {
+
+                @Override
+                public void statusUpdated(GeodatabaseStatusInfo status) {
+
+                    showMessage(activity, status.getStatus().toString());
+                }
+            };
+
+            // start sync...
+            gdbTask.submitSyncJobAndApplyResults(syncParams, gdb,
+                    statusCallback, syncResponseCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

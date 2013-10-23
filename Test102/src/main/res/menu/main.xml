@@ -7,7 +7,7 @@
         android:title="@string/action_sync"
         android:orderInCategory="100"
         app:showAsAction="withText|ifRoom" />
-    <item android:id="@+id/action_edit"
+    <item android:id="@+id/editbutton"
         android:title="@string/action_edit"
         android:orderInCategory="100"
         app:showAsAction="withText|ifRoom" />
